@@ -34,7 +34,7 @@
 
 1. Clone this repo
 ```bash
-git clone https://github.com/nimone/Fashion-Store && cd Fashion-Store
+git clone https://github.com/liegen47/Fashionista && cd Fashionista
 ```
 2. Install project dependencies
 ```bash
