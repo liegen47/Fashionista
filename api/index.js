@@ -1,0 +1,58 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const path = require("path");
+dotenv.config();
+
+const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
+const productRouter = require("./routes/product");
+const cartRouter = require("./routes/cart");
+const orderRouter = require("./routes/order");
+const checkoutRouter = require("./routes/checkout");
+const {
+  handleMalformedJson,
+  formatCelebrateErrors,
+} = require("./middlewares/handleError");
+const uploadRouter = require("./routes/uploadRouter");
+
+const app = express();
+mongoose.set("strictQuery", false);
+mongoose
+  .connect("mongodb://localhost:27017/Fashion_store", {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  })
+  .then(() => console.log("Connected to database"))
+  .catch((err) => console.error(err));
+
+// global middlewares
+app.use(cors());
+app.use(express.json());
+app.use(handleMalformedJson);
+
+// routes
+app.use("/uploads", uploadRouter);
+app.use("/auth", authRouter);
+app.use("/users", userRouter);
+app.use("/products", productRouter);
+app.use("/carts", cartRouter);
+app.use("/orders", orderRouter);
+app.use("/checkout", checkoutRouter);
+app.use(
+  "/public/images",
+  express.static(path.join(__dirname, "../public/images"))
+);
+
+// server status
+app.get("/", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+// format celebrate paramater validation errors
+app.use(formatCelebrateErrors);
+
+app.listen(process.env.PORT || 4000, () => {
+  console.log(`Listening on port ${process.env.PORT || 4000}`);
+});
